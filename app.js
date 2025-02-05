@@ -1,6 +1,5 @@
-const BASE_URL = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
-
-
+const BASE_URL =
+  "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
 
 const dropdowns = document.querySelectorAll(".dropdown select");
 const btn = document.querySelector("form button");
@@ -28,30 +27,18 @@ for (let select of dropdowns) {
 
 const updateExchangeRate = async () => {
   let amount = document.querySelector(".amount input");
-  let amtVal = parseFloat(amount.value);
-  if (isNaN(amtVal) || amtVal <= 0) {
+  let amtVal = amount.value;
+  if (amtVal === "" || amtVal < 1) {
     amtVal = 1;
     amount.value = "1";
   }
-
   const URL = `${BASE_URL}/${fromCurr.value.toLowerCase()}/${toCurr.value.toLowerCase()}.json`;
+  let response = await fetch(URL);
+  let data = await response.json();
+  let rate = data[toCurr.value.toLowerCase()];
 
-  try {
-    let response = await fetch(URL);
-    let data = await response.json();
-    console.log(data); // Log the API response for debugging
-    let rate = data[toCurr.value.toLowerCase()];
-
-    if (!rate) {
-      msg.innerText = 'Invalid currency code or API response error.';
-      return;
-    }
-
-    let finalAmount = amtVal * rate;
-    msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
-  } catch (error) {
-    msg.innerText = 'Error fetching data. Please try again later.';
-  }
+  let finalAmount = amtVal * rate;
+  msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
 };
 
 const updateFlag = (element) => {
